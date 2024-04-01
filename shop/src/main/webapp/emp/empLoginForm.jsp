@@ -13,6 +13,9 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+	<form action="./empLoginAction.jsp" method="post">
+		<input type="text" name="userId">
+		<input type="password" name="userPw">
+	</form>
 </body>
 </html>
