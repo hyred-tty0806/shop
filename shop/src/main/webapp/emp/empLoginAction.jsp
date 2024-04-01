@@ -26,7 +26,7 @@
 	
 
 	Connection conn = common.DBConnection();
-	String sql = "SELECT * FROM EMP WHERE emp_id = ? AND emp_pw = PASSWORD(?)";
+	String sql = "SELECT * FROM EMP WHERE active='ON' AND emp_id = ? AND emp_pw = PASSWORD(?)";
 	PreparedStatement stmt = conn.prepareStatement(sql);
 	stmt.setString(1, empId);
 	stmt.setString(2, empPw);
@@ -34,7 +34,6 @@
 
 	String msg = "아이디 또는 비밀번호를 다시 확인해보시기 바랍니다.";
 	System.out.println("rs1 : " + rs1);
-/* 	System.out.println("rs1 : " + rs1.next()); */
 
  	if(rs1.next()){
  		session.setAttribute("loginEmp", empId);
