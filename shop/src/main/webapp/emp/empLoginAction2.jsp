@@ -5,9 +5,7 @@
 <%@page import="java.sql.Connection"%>
 <%@page import="shop.Common"%>
 
-
 <% 
-	//인증분기 : 세션변수 이름 - loginEmp
 	Common common = new Common();
 	common.sessionCheck("in", request, response);
 	
@@ -24,24 +22,22 @@
 		}
 	};
 	
-
+	
 	Connection conn = common.DBConnection();
 	String sql = "SELECT * FROM EMP WHERE emp_id = ? AND emp_pw = PASSWORD(?)";
 	PreparedStatement stmt = conn.prepareStatement(sql);
 	stmt.setString(1, empId);
 	stmt.setString(2, empPw);
 	ResultSet rs1 = stmt.executeQuery();
-
+	
 	String msg = "아이디 또는 비밀번호를 다시 확인해보시기 바랍니다.";
-	System.out.println("rs1 : " + rs1);
-/* 	System.out.println("rs1 : " + rs1.next()); */
-
- 	if(rs1.next()){
- 		session.setAttribute("loginEmp", empId);
- 		response.sendRedirect("./empList.jsp");
-	} else{
- 		response.sendRedirect("./empLoginForm.jsp");		
-	}
+	if(rs1.next()){
+		response.sendRedirect("/shop/emp/empList.jsp");
+		return;
+	}else{
+		response.sendRedirect("/shop/emp/empForm.jsp?msg="+msg);		
+		return;
+	}	
 %>
 <!DOCTYPE html>
 <html>

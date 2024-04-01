@@ -3,7 +3,7 @@
 <%@page import="shop.Common"%>
 <%
 	// 인증분기 : 세션변수 이름 - loginEmp
-	Common common = new Common();
+ 	Common common = new Common();
 	common.sessionCheck("out", request, response);
 %>
 <!DOCTYPE html>

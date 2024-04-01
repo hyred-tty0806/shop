@@ -14,8 +14,9 @@
 </head>
 <body>
 	<form action="./empLoginAction.jsp" method="post">
-		<input type="text" name="userId">
-		<input type="password" name="userPw">
+		<input type="text" name="empId">
+		<input type="password" name="empPw">
+		<button>LOGIN</button>
 	</form>
 </body>
 </html>
