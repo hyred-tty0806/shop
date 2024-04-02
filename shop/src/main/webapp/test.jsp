@@ -1,14 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@page import="shop.Common"%>
-<% 
-	request.setCharacterEncoding("utf-8");
-	// 인증분기 : 세션변수 이름 - loginEmp
-	Common common = new Common();
-	common.loginCheck("in", request, response);
-	
- 	String errMsg = request.getParameter("msg");
-%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,30 +24,21 @@
 			<div class="col">
 				<div class="position-absolute top-50 start-50 translate-middle">
 					<h1>LOGIN</h1>
-					<form method="post" action="./empLoginAction.jsp">
+					<form method="post" action="/diary/loginAction.jsp">
 						<div class="mb-3 row">
 							<label for="staticEmail" class="col-sm-3 col-form-label">ID</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control"  name="empId" id="empId" value="">
+								<input type="text" class="form-control"  name="memberId" id="memberId" value="">
 							</div>
 						</div>
 						<div class="mb-3 row">
 							<label for="inputPassword" class="col-sm-3 col-form-label">PASSWORD</label>
 							<div class="col-sm-9">
-								<input type="password" class="form-control" id="inputPassword" name="empPw" id="empPw" value="">
+								<input type="password" class="form-control" id="inputPassword" name="memberPw" id="memberPw" value="">
 							</div>
 						</div>
 						<button type="submit" class="btn btn-success">로그인</button>
 					</form>
-				</div>
-				<div>
- 				<% 
-					if(errMsg != null) {
-				%>
-						<%=errMsg%>		
-				<%
-					} 
-				%>
 				</div>
 
 			</div>
