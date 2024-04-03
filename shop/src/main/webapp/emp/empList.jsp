@@ -2,10 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*"%>
 <%@ page import="java.util.*"%>
-
-
 <!-- Controller Layer -->
-
 <%
 	// 인증분기	 : 세션변수 이름 - loginEmp
 	//인증분기 : 세션변수 이름 - loginEmp
@@ -13,7 +10,6 @@
 	common.loginCheck("out", request, response);
 %>
 <!-- Model Layer -->
-
 <%
 	int currentPage = 1; // 1. 처음이면 1페이지 
 	if(request.getParameter("currentPage") != null){ // 요청된 파라미터가 있으면
@@ -42,9 +38,6 @@
 	if(totalRow%rowPerPage != 0){
 		lastPage = lastPage + 1;
 	}
-	
-	
-	
 	
 
 	PreparedStatement stmt = null;
@@ -82,66 +75,51 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
-<body>
-	<div><a href="./empLogout.jsp">로그아웃</a></div>
-	<h1>사원 목록</h1>
-	<table border="1">
-		<tr>
-			<th>empId</th>
-			<th>empName</th>
-			<th>empJob</th>
-			<th>hireDate</th>
-			<th>active</th>
-		</tr>
-		<%
-			for(HashMap<String, Object> m : list) {
-		%>
-				<tr>
-					<td><%=(String)(m.get("empId"))%></td>
-					<td><%=(String)(m.get("empName"))%></td>
-					<td><%=(String)(m.get("empJob"))%></td>
-					<td><%=(String)(m.get("hireDate"))%></td>
-					<td>	
-						<a href='modifyEmpActive.jsp?active=<%=(String)(m.get("active"))%>&empId=<%=(String)(m.get("empId"))%>' >
-							<%=(String)(m.get("active"))%>
-						</a>
-					</td>
-				</tr>
-		<%		
-			}
-		%>
-	</table>
-		<!-- 페이지 버튼 -->
-				<nav aria-label="Page navigation example">
-					<ul class="pagination justify-content-center">
-						<% 
-							if(currentPage > 1){
-						%>
-								<li class="page-item"><a class="page-link" href="./empList.jsp?currentPage=1">FIRST</a></li>
-								<li class="page-item"><a class="page-link" href="./empList.jsp?currentPage=<%=currentPage-1%>">PREV</a></li>
-						<%
-							}else{
-						%>
-								<li class="page-item"><a class="page-link" href="#">FIRST</a></li>
-								<li class="page-item"><a class="page-link" href="#">PREV</a></li>						
-						<% 
-							}
-						%>
-							 <li class="page-item"><a class="page-link" href="#"><%=currentPage%></a></li>
-						<%
-							if(currentPage < lastPage){	
-						%>
-						   		<li class="page-item"><a class="page-link" href="./empList.jsp?currentPage=<%=currentPage+1%>">NEXT</a></li>
-							 	<li class="page-item"><a class="page-link" href="./empList.jsp?currentPage=<%=lastPage+1%>">LAST</a></li>
-						<% 
-							}else{
-						%>
-						   		<li class="page-item"><a class="page-link" href="#">NEXT</a></li>						
-							 	<li class="page-item"><a class="page-link" href="#">LAST</a></li>
-						<% 
-							}
-						%>
-					</ul>
-				</nav>
+<body style="padding-top: 57px;">
+	<%@ include file="/common/empMenu.jsp" %>
+	<div class="container text-center">
+		<div class="row align-items-center mt-5">
+			<div class="col"></div>
+			<div class="col-8">
+				<h1>EMPLOYEE LIST</h1>
+				<table class="table w-100">
+					<tr>
+						<th>empId</th>
+						<th>empName</th>
+						<th>empJob</th>
+						<th>hireDate</th>
+						<th>active</th>
+					</tr>
+					<%
+						for(HashMap<String, Object> m : list) {
+					%>
+							<tr>
+								<td><%=(String)(m.get("empId"))%></td>
+								<td><%=(String)(m.get("empName"))%></td>
+								<td><%=(String)(m.get("empJob"))%></td>
+								<td><%=(String)(m.get("hireDate"))%></td>
+								<td>	
+								<%
+									HashMap<String, String> m2 = new HashMap<String, String>();
+									m2 = (HashMap<String, String>)(session.getAttribute("loginEmp"));
+									if(Integer.parseInt(m2.get("grade")) > 0){	
+								%>
+										<a href='modifyEmpActive.jsp?active=<%=(String)(m.get("active"))%>&empId=<%=(String)(m.get("empId"))%>' >
+											<%=(String)(m.get("active"))%>
+										</a>
+								<%
+									}								
+								%>
+								</td>
+							</tr>
+					<%		
+						}
+					%>
+				</table>
+			</div>
+			<div class="col"></div>
+		</div>
+	</div>
+	<%@ include file="/common/paging.jsp"  %>
 </body>
 </html>
