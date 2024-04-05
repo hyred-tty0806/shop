@@ -1,13 +1,16 @@
-<%@page import="shop.Common"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="shop.Model"%>
+<%@page import="shop.Common"%>
 <%@ page import="java.sql.*"%>
 <%@ page import="java.util.*"%>
 <!-- Controller Layer -->
 <%
 	// 인증분기	 : 세션변수 이름 - loginEmp
-	//인증분기 : 세션변수 이름 - loginEmp
 	Common common = new Common();
-	common.loginCheck("out", request, response);
+	int resultInt = common.loginCheck("out", request, response);
+	if(resultInt == 0){
+		return;
+	}
 %>
 <!-- Model Layer -->
 <%
@@ -16,30 +19,38 @@
 		// 페이지 이동하여 currentPage 값을 받았을 때
 		currentPage = Integer.parseInt(request.getParameter("currentPage"));	
 	}
-	String listCntQry = "select COUNT(*) from emp";
 	
 	Connection conn = common.DBConnection();
-	
 	PreparedStatement stmtCnt = null;
 	ResultSet rsCnt = null;
 	
-	stmtCnt = conn.prepareStatement(listCntQry);
-	rsCnt = stmtCnt.executeQuery();
-	
+	Model model = new Model();
+	/* row의 총 개수 */
+	String listCntQry = "select COUNT(*) cnt from emp";
+	String[] qryNameArr = {"cnt"};
+	ArrayList<HashMap<String, Object>> cntOne = new ArrayList<HashMap<String, Object>>();
+	cntOne = model.listQry(conn, rsCnt, stmtCnt, listCntQry, qryNameArr);
 	int totalRow = 0;
-	if(rsCnt.next()){
-		totalRow = rsCnt.getInt("count(*)");
+	if(cntOne.get(0) != null){
+		totalRow = Integer.parseInt(""+cntOne.get(0).get("cnt"));		
 	}
-	System.out.println("totalRow : " + totalRow);
+	/* row의 총 개수 */
 	
-	
+	/* 보여줄 row의 개수*/
 	int rowPerPage = 10;
+	if(request.getParameter("rowPerPage") != null){
+		rowPerPage = Integer.parseInt(request.getParameter("rowPerPage"));		
+	}
+	/* 보여줄 row의 개수*/
+	
+	/* 마지막 페이지를 구하고 */	
 	int lastPage = totalRow / rowPerPage;
 	if(totalRow%rowPerPage != 0){
 		lastPage = lastPage + 1;
 	}
+	/* 마지막 페이지를 구하고 */	
 	
-
+	
 	PreparedStatement stmt = null;
 	ResultSet rs = null;
 	String sql = "select emp_id empId, emp_name empName, emp_job empJob, hire_date hireDate, active from emp order by hire_date desc limit ?, ?";
@@ -62,23 +73,24 @@
 		m.put("active", rs.getString("active"));
 		list.add(m);
 	}
+	
 	// JDBC API 사용이 끝났다면 DB자원들을 반납
+	String pageingUrl = "./empList.jsp";
 %>
 
-<!-- View Layer : 모델(ArrayList<HashMap<String, Object>>) 출력 -->
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Insert title here</title>
+	<title>EMPLOYEE LIST</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
 <body style="padding-top: 57px;">
 	<%@ include file="/common/empMenu.jsp" %>
 	<div class="container text-center">
-		<div class="row align-items-center mt-5">
+		<div class="row mt-5">
 			<div class="col"></div>
 			<div class="col-8">
 				<h1>EMPLOYEE LIST</h1>
@@ -117,7 +129,12 @@
 					%>
 				</table>
 			</div>
-			<div class="col"></div>
+			<div class="col position-relative">
+  				<div class="position-absolute top-0 start-0">
+					<%@ include file="/common/rowPerPage.jsp"  %>									  				
+  				</div>
+			</div>
+			</div>
 		</div>
 	</div>
 	<%@ include file="/common/paging.jsp"  %>

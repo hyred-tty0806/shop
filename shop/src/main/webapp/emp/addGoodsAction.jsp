@@ -1,3 +1,7 @@
+<%@page import="java.nio.file.Files"%>
+<%@page import="java.io.File"%>
+<%@page import="java.io.OutputStream"%>
+<%@page import="java.io.InputStream"%>
 <%@page import="shop.Model"%>
 <%@page import="shop.Common"%>
 <%@page import="java.sql.*"%>
@@ -7,7 +11,7 @@
 <%
 	//인증분기 : 세션변수 이름 - loginEmp
 	Common common = new Common();
-	common.loginCheck("out", request, response);
+	int resultInt = common.loginCheck("out", request, response);
 %>
 
 <!-- Session 설정 값 : 입력할 때 로그인한 emp의 emp_id값이 필요하기 때문! -->
@@ -30,6 +34,15 @@
 		response.sendRedirect("/shop/emp/addGoodsForm.jsp");
 	}
 	
+	Part part = request.getPart("goodsImg");
+	String oriName = part.getSubmittedFileName();
+	// 원본이름에서 확장자만 분리
+	int dotIdx = oriName.lastIndexOf(".");
+	String exe = oriName.substring(dotIdx); // .png
+	
+	UUID uuid = UUID.randomUUID();
+	String filename = uuid.toString().replace("-", "");
+	filename = filename + exe;	
 	// 요청값 디버깅
 	System.out.println("addGoodsAction - category = " + category);
 	System.out.println("addGoodsAction - title = " + title);
@@ -38,12 +51,10 @@
 	System.out.println("addGoodsAction - price = " + price);
 	
 	
-%>
 
-<!-- Controller Layer -->
-<%
-	String addSql = "INSERT INTO goods(category, emp_id, goods_title, goods_content, goods_price, goods_amount) "
-					+"VALUES (?, ?, ?, ?, ?, ?)";
+	
+	String addSql = "INSERT INTO goods(category, filename, emp_id, goods_title, goods_content, goods_price, goods_amount) "
+					+"VALUES (?, ?, ?, ?, ?, ?, ?)";
 	
 	Connection conn = common.DBConnection();
 	ResultSet rs = null;
@@ -52,15 +63,29 @@
 	
 	HashMap<Integer, Object> addMap = new HashMap<Integer, Object>();
 	addMap.put(1, category);
-	addMap.put(2, (String)(loginMember.get("empId")));
-	addMap.put(3, title);
-	addMap.put(4, content);
-	addMap.put(5, Integer.parseInt(price));
-	addMap.put(6, Integer.parseInt(amount));
+	addMap.put(2, filename);
+	addMap.put(3, (String)(loginMember.get("empId")));
+	addMap.put(4, title);
+	addMap.put(5, content);
+	addMap.put(6, Integer.parseInt(price));
+	addMap.put(7, Integer.parseInt(amount));
 
 	int row = model.addQry(conn, rs, stmt, addSql, addMap);
 	
-	
+	if(row == 1){
+		InputStream inputStream = part.getInputStream(); // part객체안에 파일(바이너리)을 메모로리 불러 옴
+
+		String filePath = request.getServletContext().getRealPath("upload");
+		File f = new File(filePath, filename);
+		OutputStream outputStream = Files.newOutputStream(f.toPath()); // os + file
+		inputStream.transferTo(outputStream);
+		outputStream.close();
+		inputStream.close();
+	}
+	/* 	
+		File df = new File(filePath, rs.getString("filename"));
+		df.delete();
+	*/
 	if(row == 1) {
 		// 상품 등록 성공
 		System.out.println("상품 등록 성공");

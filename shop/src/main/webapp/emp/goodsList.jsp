@@ -10,7 +10,7 @@
 <%
 	//인증분기 : 세션변수 이름 - loginEmp
 	Common common = new Common();
-	common.loginCheck("out", request, response);
+	int resultInt = common.loginCheck("out", request, response);
 %>
 <%
 	int currentPage = 1;
@@ -52,13 +52,16 @@
 	
 	
 	int rowPerPage = 10;
+	if(request.getParameter("rowPerPage") != null){
+		rowPerPage = Integer.parseInt(request.getParameter("rowPerPage"));		
+	}
 	int lastPage = totalRow / rowPerPage;
 	if(totalRow%rowPerPage != 0){
 		lastPage = lastPage + 1;
 	}
 	
 
-	String sql = "SELECT goods_no no, category, emp_id empId, goods_title title, goods_content content, goods_price price, goods_amount amount"
+	String sql = "SELECT goods_no no, category, emp_id empId, goods_title title, goods_content content, goods_price price, goods_amount amount, filename"
 				+" FROM goods ORDER BY no DESC LIMIT ?, ?";
 	stmt = conn.prepareStatement(sql);
 	stmt.setInt(1, (currentPage-1)*rowPerPage);
@@ -78,15 +81,11 @@
 		m.put("title", rs.getString("title"));
 		m.put("price", rs.getString("price"));
 		m.put("amount", rs.getString("amount"));
+		m.put("filename", rs.getString("filename"));
 		list2.add(m);
 	}
 	// JDBC API 사용이 끝났다면 DB자원들을 반납
-	
-	
 	String pageingUrl = "./goodsList.jsp";
-
-
-
 %>
 <% 
 	String listQry = "";
@@ -114,7 +113,7 @@
 				<div class="col">
 				</div>
 			</div>
-			<div class="row align-items-center mt-5">
+			<div class="row mt-5">
 				<div class="col">
 					<div>
 						<a href="/shop/emp/goodsList.jsp">전체</a>				
@@ -134,19 +133,23 @@
 						<tr>
 							<th>No</th>
 							<th>Category</th>
+							<th>Image</th>
 							<th>ID</th>
 							<th>Title</th>
 							<th>Price</th>
 							<th>Amount</th>
-						</tr>
-						
-						
+						</tr>	
 					<%
 						for(HashMap<String, Object> m : list2) {
 					%>
 							<tr>
 								<td><%=(String)(m.get("no"))%></td>
 								<td><%=(String)(m.get("category"))%></td>
+								<td>
+									<a href="./goodsOne.jsp?no=<%=(String)(m.get("no"))%>">
+										<img alt="" src="/shop/upload/<%=(String)(m.get("filename"))%>" style="height: 30%; width: 30%;"> 
+									</a>
+								</td>
 								<td><%=(String)(m.get("empId"))%></td>
 								<td><%=(String)(m.get("title"))%></td>
 								<td><%=(String)(m.get("price"))%></td>
@@ -158,11 +161,15 @@
 						
 					</table>
 				</div>
-				<div class="col">
-					<a href="/shop/emp/addGoodsForm.jsp">상품등록</a>
+
+				<div class="col position-relative">
+	  				<div class="position-absolute top-0 start-0">
+						<a href="/shop/emp/addGoodsForm.jsp">상품등록</a>
+						<%@ include file="/common/rowPerPage.jsp"  %>									  				
+	  				</div>
+				</div>
 				</div>
 			</div>
-		</div>
 		<%@ include file="/common/paging.jsp"  %>
 </body>
 </html>

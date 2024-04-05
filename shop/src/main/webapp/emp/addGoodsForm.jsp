@@ -10,7 +10,7 @@
 <% 
 	//인증분기 : 세션변수 이름 - loginEmp
 	Common common = new Common();
-	common.loginCheck("out", request, response);	
+	int resultInt = common.loginCheck("out", request, response);	
 %>
 
 <% 
@@ -49,7 +49,7 @@
 		<div class="row align-items-center mt-5">
 			<div class="col"></div>
 			<div class="col-10">
-				<form action="/shop/emp/addGoodsAction.jsp">
+				<form action="/shop/emp/addGoodsAction.jsp" method="post" enctype="multipart/form-data">
 					<!-- 1. 셀렉트박스 카테고리 목록 출력 -->
 					<table class="table">
 					<colgroup>
@@ -66,6 +66,14 @@
 									<option value="<%=s.get("category")%>"><%=s.get("category")%></option>
 								<%}%>
 							</select>			
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="image">IMAGE</label>			
+						</td>
+						<td>
+							<input type="file" name="goodsImg" />
 						</td>
 					</tr>
 					<tr>

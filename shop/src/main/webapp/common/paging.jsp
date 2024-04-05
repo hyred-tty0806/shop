@@ -6,8 +6,8 @@
 			<% 
 				if(currentPage > 1){
 			%>
-					<li class="page-item"><a class="page-link" href="<%=pageingUrl %>?currentPage=1">FIRST</a></li>
-					<li class="page-item"><a class="page-link" href="<%=pageingUrl %>?currentPage=<%=currentPage-1%>">PREV</a></li>
+					<li class="page-item"><a class="page-link" href="<%=pageingUrl %>?currentPage=1&rowPerPage=<%=rowPerPage %>">FIRST</a></li>
+					<li class="page-item"><a class="page-link" href="<%=pageingUrl %>?currentPage=<%=currentPage-1%>&rowPerPage=<%=rowPerPage %>">PREV</a></li>
 			<%
 				}else{
 			%>
@@ -20,8 +20,8 @@
 			<%
 				if(currentPage < lastPage){	
 			%>
-			   		<li class="page-item"><a class="page-link" href="<%=pageingUrl %>?currentPage=<%=currentPage+1%>">NEXT</a></li>
-				 	<li class="page-item"><a class="page-link" href="<%=pageingUrl %>?currentPage=<%=lastPage%>">LAST</a></li>
+			   		<li class="page-item"><a class="page-link" href="<%=pageingUrl %>?currentPage=<%=currentPage+1%>&rowPerPage=<%=rowPerPage %>">NEXT</a></li>
+				 	<li class="page-item"><a class="page-link" href="<%=pageingUrl %>?currentPage=<%=lastPage%>&rowPerPage=<%=rowPerPage %>">LAST</a></li>
 			<% 
 				}else{
 			%>

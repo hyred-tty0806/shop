@@ -10,7 +10,7 @@
 <% 
 	//인증분기 : 세션변수 이름 - loginEmp
 	Common common = new Common();
-	common.loginCheck("in", request, response);
+	int resultInt = common.loginCheck("in", request, response);
 	
 	
 	String[] paramsArr = new String[2];

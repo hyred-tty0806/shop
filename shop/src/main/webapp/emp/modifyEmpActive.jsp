@@ -9,7 +9,7 @@
 	
 	//인증분기 : 세션변수 이름 - loginEmp
 	Common common = new Common();
-	common.loginCheck("out", request, response);
+	int resultInt = common.loginCheck("out", request, response);
 	
 	String[] paramsArr = new String[2];
 	paramsArr[0] = active;
