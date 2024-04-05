@@ -21,9 +21,9 @@
 <body style="padding-top: 57px;">
 	<div class="container">
 		<nav class="navbar bg-dark fixed-top border-bottom border-body" data-bs-theme="dark">
-		  <!-- Navbar content -->
+			<!-- Navbar content -->
 		    <div class="container-fluid">
-		      <a class="navbar-brand" href="#">EMPLOYEE</a>
+				<a class="navbar-brand" href="#">EMPLOYEE</a>
 		    </div>
 		</nav>
 	</div>	

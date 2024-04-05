@@ -1,5 +1,9 @@
-<%@page import="shop.Model"%>
 <%@page import="java.util.HashMap"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="shop.Model"%>
+<%@page import="java.sql.PreparedStatement"%>
+<%@page import="java.sql.ResultSet"%>
+<%@page import="java.sql.Connection"%>
 <%@page import="shop.Common"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -12,8 +16,19 @@
 	String empName = common.getSessionInfo("empName", request, response);
 	int no = Integer.parseInt(request.getParameter("no"));
 %>
-<%
+
+<% 
 	/* model */
+	/* 1. 카테고리 목록 조회 */
+	Connection conn = common.DBConnection();
+	Model model = new Model();
+	String listQry = "select category from goods GROUP BY category ORDER BY category ASC";
+	ResultSet rs = null;
+	PreparedStatement stmt = null;
+	String[] colNameArr = {"category"};
+	ArrayList<HashMap<String, Object>> list = model.listQry(conn, rs, stmt, listQry, colNameArr);
+	
+	/* goods 상세 조회 */
 	String qry = "SELECT goods_no no, category, filename, emp_id empId, goods_title title, goods_content content, "
 				+ "goods_price price, goods_amount amount, update_date ud, create_date cd "
 			    + "FROM goods WHERE goods_no = ?";
@@ -21,7 +36,6 @@
 			"empId","title","content","price","amount","ud","cd"};
 	HashMap<Integer, Object> qryParamMap = new HashMap<Integer, Object>();
 	qryParamMap.put(1, no);
-	Model model = new Model();
 	HashMap<String, Object> result = model.listOneQry(qry, qryNameArr, qryParamMap);
 %>
 <!DOCTYPE html>
@@ -41,7 +55,7 @@
 			<div class="col">
 			</div>
 			<div class="col-10">
-				<h1>GOODS ONE</h1>
+			<h1>GOODS SAVE</h1>
 			</div>
 			<div class="col">
 			</div>
@@ -49,7 +63,7 @@
 		<div class="row align-items-center mt-5">
 			<div class="col"></div>
 			<div class="col-10">
-				<form action="/shop/emp/updateGoodsOne.jsp?no=<%=no %>" method="post" enctype="multipart/form-data">
+				<form action="/shop/emp/updateGoodsAction.jsp?no=<%=no %>" method="post" enctype="multipart/form-data">
 					<!-- 1. 셀렉트박스 카테고리 목록 출력 -->
 					<table class="table">
 					<colgroup>
@@ -61,7 +75,13 @@
 							<label for="category">CATEGORY</label>			
 						</td>
 						<td>
-							<%=result.get("category") %>
+							<select name="category" id="category" class="form-select" aria-label="Default select example" required="required">
+								<%for( HashMap<String, Object> s : list ){%>
+									<option value="<%=s.get("category")%>" 
+										<%=(s.get("category") == result.get("category")) ? "selected" : "" %>
+									><%=s.get("category")%></option>
+								<%}%>
+							</select>			
 						</td>
 					</tr>
 					<tr>
@@ -70,6 +90,7 @@
 						</td>
 						<td>
 							<img alt="" src="/shop/upload/<%=result.get("filename") %>" style="width:50%; height: 50%;">
+							<input type="file" name="goodsImg" value="<%=result.get("filename")%>" />
 						</td>
 					</tr>
 					<tr>
@@ -77,7 +98,8 @@
 							<label for="title">TITLE</label>			
 						</td>
 						<td>
-							<%=result.get("title") %>			  				
+			  				<input type="text" id="title" name="title" class="form-control" aria-describedby="basic-addon1"
+			  					value="<%=result.get("title") %>" required="required">
 						</td>
 					</tr>
 					<tr>
@@ -85,7 +107,8 @@
 							<label for="amount">AMOUNT</label>
 						</td>
 						<td>
-							<%=result.get("amount")%>			  							  								
+			  				<input type="number" id="amount" name="amount" class="form-control" aria-describedby="basic-addon1"
+			  				value="<%=result.get("amount")%>" required="required">				
 						</td>
 					</tr>
 					<tr>
@@ -93,8 +116,8 @@
 							<label for="content">CONTENT</label>
 						</td>
 						<td>
-							<textarea id="content" name="content" style="resize : none; height: 200px;" class="form-control" aria-label="With textarea" readonly>
-								<%=result.get("content") %>			  							  															
+							<textarea id="content" name="content" style="resize : none; height: 200px;" class="form-control" aria-label="With textarea" required="required">
+								<%=result.get("content") %>	
 							</textarea>
 						</td>
 					</tr>
@@ -104,7 +127,9 @@
 						</td>
 						<td>
 							<div class="input-group mb-3">
-								<%=result.get("price") %> WON
+							  <input type="number" name="price" class="form-control" aria-describedby="basic-addon2"
+							  value="<%=result.get("price") %>" required="required">
+							  <span class="input-group-text" id="basic-addon2">WON</span>
 							</div>
 						</td>
 					</tr>
@@ -116,5 +141,6 @@
 			</div>
 		</div>
 	</div>
+
 </body>
 </html>

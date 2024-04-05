@@ -11,6 +11,7 @@
 	if(resultInt == 0){
 		return;
 	}
+	String empName = common.getSessionInfo("empName", request, response);
 %>
 <!-- Model Layer -->
 <%

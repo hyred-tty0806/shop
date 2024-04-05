@@ -11,6 +11,11 @@
 	//인증분기 : 세션변수 이름 - loginEmp
 	Common common = new Common();
 	int resultInt = common.loginCheck("out", request, response);
+	if(resultInt == 0){
+		return;
+	}
+	String empName = common.getSessionInfo("empName", request, response);
+	
 %>
 <%
 	int currentPage = 1;

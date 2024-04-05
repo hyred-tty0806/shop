@@ -36,10 +36,10 @@ public class Common {
 	
 	public String getSessionInfo(String msgInfo, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		HttpSession session = request.getSession();
-		HashMap<String, String> getInfoMap = (HashMap<String, String>) session.getAttribute("loginEmp");
-		if(getInfoMap.get(msgInfo) == null) {
+		if(session.getAttribute("loginEmp") == null) {		
 			return "";
 		}
+		HashMap<String, String> getInfoMap = (HashMap<String, String>) session.getAttribute("loginEmp");
 		return getInfoMap.get(msgInfo);
 	}
 }
