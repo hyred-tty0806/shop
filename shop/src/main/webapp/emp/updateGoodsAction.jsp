@@ -34,8 +34,8 @@
 	
 	// 요청 값이 1개라도 null일시
 	if(category == null || title == null || amount == null || 
-			content == null || price == null || no == 0) {
-		response.sendRedirect("/shop/emp/addGoodsForm.jsp");
+			content == null || price == null) {
+		response.sendRedirect("/shop/emp/goodsOne.jsp");
 	}
 	
 	Part part = request.getPart("goodsImg");
@@ -62,41 +62,41 @@
 	System.out.println("addGoodsAction - content = " + content);
 	System.out.println("addGoodsAction - price = " + price);
 	
-	if(dotIdx == -1){
-		String updateSql = "UPDATE goods "
-				+"SET category = ?, emp_id = ?, "
-				+"goods_title = ?, goods_content = ?, goods_price = ?, "
-				+"goods_amount = ?, update_date = NOW() WHERE goods_no = ?";				
-	}else{
-		String updateSql = "UPDATE goods "
-				+"SET category = ?, filename = ?, emp_id = ?, "
-				+"goods_title = ?, goods_content = ?, goods_price = ?, "
-				+"goods_amount = ?, update_date = NOW() WHERE goods_no = ?";		
-	}
-		
-	Model model = new Model();
+	String filenameOfPart = (dotIdx == -1) ? "" : ", filename = ? ";
+	String updateSql = "UPDATE goods SET "
+					+ "emp_id = ?, category = ? "
+					+ filenameOfPart
+					+ ", goods_title = ?, goods_amount = ?, goods_content = ? , goods_price = ? "
+					+ " WHERE goods_no = ?";				
 	
+
+	
+	List<String> list = new ArrayList<>(Arrays.asList(
+				(String)(loginMember.get("empId")), category, filename, title, amount, content, price, ""+no
+			));
+	list.removeAll(Collections.singleton(""));
+	System.out.println(list);
+	
+	Model model = new Model();
 	HashMap<Integer, Object> qryParamMap = new HashMap<Integer, Object>();
-	qryParamMap.put(1, category);
-	qryParamMap.put(2, filename);
-	qryParamMap.put(3, (String)(loginMember.get("empId")));
-	qryParamMap.put(4, title);
-	qryParamMap.put(5, content);
-	qryParamMap.put(6, Integer.parseInt(price));
-	qryParamMap.put(7, Integer.parseInt(amount));
-	qryParamMap.put(8, no);
+	for(int i = 0; i < list.size(); i++){
+		System.out.println(list.get(i));
+		System.out.println(i);
+		qryParamMap.put(i+1, list.get(i));
+	}
 
 	int row = model.updateQry(updateSql, qryParamMap);
 	
 	if(row == 1){
-		InputStream inputStream = part.getInputStream(); // part객체안에 파일(바이너리)을 메모로리 불러 옴
-
-		String filePath = request.getServletContext().getRealPath("upload");
-		File f = new File(filePath, filename);
-		OutputStream outputStream = Files.newOutputStream(f.toPath()); // os + file
-		inputStream.transferTo(outputStream);
-		outputStream.close();
-		inputStream.close();
+		if(dotIdx != -1){
+			InputStream inputStream = part.getInputStream(); // part객체안에 파일(바이너리)을 메모로리 불러 옴
+			String filePath = request.getServletContext().getRealPath("upload");
+			File f = new File(filePath, filename);
+			OutputStream outputStream = Files.newOutputStream(f.toPath()); // os + file
+			inputStream.transferTo(outputStream);
+			outputStream.close();
+			inputStream.close();			
+		}
 	}
 	/* 	
 		File df = new File(filePath, rs.getString("filename"));
@@ -111,5 +111,4 @@
 		System.out.println("상품 등록 실패");
 		response.sendRedirect("/shop/emp/updateGoodsForm.jsp?no="+no);
 	}
-	
 %>

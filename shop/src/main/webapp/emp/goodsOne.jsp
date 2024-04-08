@@ -49,67 +49,66 @@
 		<div class="row align-items-center mt-5">
 			<div class="col"></div>
 			<div class="col-10">
-				<form action="/shop/emp/updateGoodsOne.jsp?no=<%=no %>" method="post" enctype="multipart/form-data">
+				<form action="/shop/emp/updateGoodsForm.jsp?no=<%=no %>" method="post" enctype="multipart/form-data">
 					<!-- 1. 셀렉트박스 카테고리 목록 출력 -->
 					<table class="table">
-					<colgroup>
-						<col width="30%">
-						<col width="70%">
-					</colgroup>
-					<tr>
-						<td >
-							<label for="category">CATEGORY</label>			
-						</td>
-						<td>
-							<%=result.get("category") %>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<label for="image">IMAGE</label>			
-						</td>
-						<td>
-							<img alt="" src="/shop/upload/<%=result.get("filename") %>" style="width:50%; height: 50%;">
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<label for="title">TITLE</label>			
-						</td>
-						<td>
-							<%=result.get("title") %>			  				
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<label for="amount">AMOUNT</label>
-						</td>
-						<td>
-							<%=result.get("amount")%>			  							  								
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<label for="content">CONTENT</label>
-						</td>
-						<td>
-							<textarea id="content" name="content" style="resize : none; height: 200px;" class="form-control" aria-label="With textarea" readonly>
-								<%=result.get("content") %>			  							  															
-							</textarea>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<label for="price">PRICE</label>
-						</td>
-						<td>
-							<div class="input-group mb-3">
-								<%=result.get("price") %> WON
-							</div>
-						</td>
-					</tr>
+						<colgroup>
+							<col width="30%">
+							<col width="70%">
+						</colgroup>
+						<tr>
+							<td >
+								<label for="category">CATEGORY</label>			
+							</td>
+							<td>
+								<%=result.get("category") %>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="image">IMAGE</label>			
+							</td>
+							<td>
+								<img alt="" src="/shop/upload/<%=result.get("filename") %>" style="width:50%; height: 50%;">
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="title">TITLE</label>			
+							</td>
+							<td>
+								<%=result.get("title") %>			  				
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="amount">AMOUNT</label>
+							</td>
+							<td>
+								<%=result.get("amount")%>			  							  								
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="content">CONTENT</label>
+							</td>
+							<td>
+								<textarea id="content" name="content" style="resize : none; height: 200px;" class="form-control" aria-label="With textarea" readonly><%=result.get("content") %></textarea>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="price">PRICE</label>
+							</td>
+							<td>
+								<div class="input-group mb-3">
+									<%=result.get("price") %> WON
+								</div>
+							</td>
+						</tr>
 					</table>
 					<button class="btn btn-success">UPDATE</button>
+					<a href="/shop/emp/deleteGoodsAction.jsp?no=<%=no%>&filename=<%=result.get("filename")%>" class="btn btn-success">DELEDTE</a>
 				</form>
 			</div>
 			<div class="col">

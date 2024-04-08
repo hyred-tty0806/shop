@@ -77,5 +77,10 @@ public class Model {
 		}
 		return stmt.executeUpdate();
 	}
-
+	public int deleteQry(String qry, String no) throws Exception{
+		conn = common.DBConnection();
+		stmt = conn.prepareStatement(qry);
+		stmt.setString(1, no);
+		return stmt.executeUpdate();
+	}
 }

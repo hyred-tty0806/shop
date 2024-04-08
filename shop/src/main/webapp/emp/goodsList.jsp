@@ -15,7 +15,6 @@
 		return;
 	}
 	String empName = common.getSessionInfo("empName", request, response);
-	
 %>
 <%
 	int currentPage = 1;
@@ -23,25 +22,30 @@
 		currentPage = Integer.parseInt(request.getParameter("currentPage"));
 	}
 	
-	String category = request.getParameter("category");
-	/* category null 이면 빼고 전체조회쿼리 아니면 where 조회쿼리 */
+	String category = "all";
+	if(request.getParameter("category") != null){
+		category = request.getParameter("category");
+		System.out.println("category : " + category);
+	}
 %>
 <% 
 	Connection conn = common.DBConnection();
 	ResultSet rs = null;
 	PreparedStatement stmt = null;
 	
+	String categoryPart = (category.equals("all")) ? "": " AND category = '"+category+"'";
+	
 	String categoryQry = "";
-	categoryQry = "SELECT category, count(*) cnt FROM goods GROUP BY category ORDER BY category ASC";		
+	categoryQry = "SELECT category, count(*) cnt FROM goods "
+			+ "WHERE 1=1 "
+			+ " GROUP BY category ORDER BY category ASC";		
 	String[] colNameArr = {"category","cnt"};
 	Model model = new Model();
 	ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
 	list = model.listQry(conn, rs, stmt, categoryQry, colNameArr);
 %>
-
 <% 
-	String listCntQry = "select COUNT(*) cnt from goods";
-	
+	String listCntQry = "SELECT COUNT(*) cnt FROM goods";
 	
 	PreparedStatement stmtCnt = null;
 	ResultSet rsCnt = null;
@@ -55,7 +59,6 @@
 	}
 	System.out.println("totalRow : " + totalRow);
 	
-	
 	int rowPerPage = 10;
 	if(request.getParameter("rowPerPage") != null){
 		rowPerPage = Integer.parseInt(request.getParameter("rowPerPage"));		
@@ -65,15 +68,18 @@
 		lastPage = lastPage + 1;
 	}
 	
-
 	String sql = "SELECT goods_no no, category, emp_id empId, goods_title title, goods_content content, goods_price price, goods_amount amount, filename"
-				+" FROM goods ORDER BY no DESC LIMIT ?, ?";
+				+" FROM goods WHERE 1 = 1 "
+				+ categoryPart
+				+" ORDER BY no DESC LIMIT ?, ?";
+	
+	System.out.println("sql : " + sql);
 	stmt = conn.prepareStatement(sql);
 	stmt.setInt(1, (currentPage-1)*rowPerPage);
 	stmt.setInt(2, rowPerPage);
 	rs = stmt.executeQuery(); 
-	// JDBC API 종속된 자료구조 모델 ResultSet  -> 기본 API 자료구조(ArrayList)로 변경
 	
+	// JDBC API 종속된 자료구조 모델 ResultSet  -> 기본 API 자료구조(ArrayList)로 변경
 	ArrayList<HashMap<String, Object>> list2
 		= new ArrayList<HashMap<String, Object>>();
 	
@@ -89,12 +95,15 @@
 		m.put("filename", rs.getString("filename"));
 		list2.add(m);
 	}
-	// JDBC API 사용이 끝났다면 DB자원들을 반납
 	String pageingUrl = "./goodsList.jsp";
-%>
-<% 
-	String listQry = "";
-	listQry = "SELECT FROM goods";
+	/* category null 이면 빼고 전체조회쿼리 아니면 where 조회쿼리 */
+	String searchUrl = "";
+	if(category == null){
+		searchUrl = pageingUrl+"?currentPage="+currentPage+"&rowPerPage="+rowPerPage;		
+	}else{
+		searchUrl = pageingUrl+"?currentPage="+currentPage+"&rowPerPage="+rowPerPage+"&category="+category;				
+	}
+	// JDBC API 사용이 끝났다면 DB자원들을 반납
 %>
 <!DOCTYPE html>
 <html>
@@ -108,42 +117,67 @@
 </head>
 <body>
 	<%@ include file="/common/empMenu.jsp" %>
-		<div class="container text-center">
-			<div class="row align-items-center mt-5">
-				<div class="col">
-				</div>
-				<div class="col-10">
-				<h1>GOODS LIST</h1>
-				</div>
-				<div class="col">
-				</div>
+	<div class="container text-center">
+		<div class="row align-items-center mt-5">
+			<div class="col">
 			</div>
-			<div class="row mt-5">
-				<div class="col">
-					<div>
-						<a href="/shop/emp/goodsList.jsp">전체</a>				
-					</div>
-					<%
-						for(HashMap<String, Object> m : list) {
-					%>
-							<div>
-								<a href="/shop/emp/goodsList.jsp"><%=m.get("category") %>(<%=m.get("cnt") %>)</a>										
-							</div>
-					<% 
-						}
-					%>
+			<div class="col-10">
+				<h1>GOODS LIST</h1>
+			</div>
+			<div class="col">
+			</div>
+		</div>
+		<div class="row align-items-center">
+			<div class="col">
+			</div>
+			<div class="col-6">
+				<div class="input-group">
+					<input type="text" class="form-control" aria-describedby="button-addon2">
+					<a class="btn btn-outline-secondary" type="button" id="button-addon2">Search</a>
+				</div>				
+			</div>
+			<div class="col">
+			</div>
+		</div>
+		
+		
+		<div class="row mt-5">
+			<div class="col">
+				<div>
+					<a href="/shop/emp/goodsList.jsp">전체</a>				
 				</div>
-				<div class="col-10">
-					<table class="table w-100">
-						<tr>
-							<th>No</th>
-							<th>Category</th>
-							<th>Image</th>
-							<th>ID</th>
-							<th>Title</th>
-							<th>Price</th>
-							<th>Amount</th>
-						</tr>	
+				<%
+					for(HashMap<String, Object> m : list) {
+				%>
+						<div>
+							<a href="<%=pageingUrl %>?currentPage=1&rowPerPage=<%=rowPerPage%>&category=<%=m.get("category") %>"><%=m.get("category") %>(<%=m.get("cnt") %>)</a>										
+						</div>
+				<% 
+					}
+				%>
+			</div>
+			<div class="col-10">
+			
+				<table class="table w-100">
+					<colgroup>
+						<col width="10%">
+						<col width="10%">
+						<col width="10%">
+						<col width="10%">
+						<col width="*%">
+						<col width="10%">
+						<col width="10%">
+						<col width="10%">
+					</colgroup>
+					<tr>
+						<th>No</th>
+						<th>Category</th>
+						<th>Image</th>
+						<th>ID</th>
+						<th>Title</th>
+						<th>Price</th>
+						<th>Amount</th>
+					</tr>	
 					<%
 						for(HashMap<String, Object> m : list2) {
 					%>
@@ -163,18 +197,48 @@
 					<%		
 						}
 					%>
-						
-					</table>
-				</div>
-
-				<div class="col position-relative">
-	  				<div class="position-absolute top-0 start-0">
-						<a href="/shop/emp/addGoodsForm.jsp">상품등록</a>
-						<%@ include file="/common/rowPerPage.jsp"  %>									  				
-	  				</div>
-				</div>
-				</div>
+				</table>
 			</div>
-		<%@ include file="/common/paging.jsp"  %>
+			<div class="col position-relative">
+  				<div class="position-absolute top-0 start-0">
+					<a href="/shop/emp/addGoodsForm.jsp">상품등록</a>
+					<%@ include file="/common/rowPerPage.jsp"  %>
+								  				
+  				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 페이지 버튼 -->
+	<nav aria-label="Page navigation example">
+		<ul class="pagination justify-content-center">
+			<% 
+				if(currentPage > 1){
+			%>
+					<li class="page-item"><a class="page-link" href="<%=pageingUrl %>?currentPage=1&rowPerPage=<%=rowPerPage %>&category=<%=category%>">FIRST</a></li>
+					<li class="page-item"><a class="page-link" href="<%=pageingUrl %>?currentPage=<%=currentPage-1%>&rowPerPage=<%=rowPerPage %>&category=<%=category%>">PREV</a></li>
+			<%
+				}else{
+			%>
+					<li class="page-item"><a class="page-link" href="#">FIRST</a></li>
+					<li class="page-item"><a class="page-link" href="#">PREV</a></li>						
+			<% 
+				}
+			%>
+				 <li class="page-item"><a class="page-link" href="#"><%=currentPage%></a></li>
+			<%
+				if(currentPage < lastPage){	
+			%>
+			   		<li class="page-item"><a class="page-link" href="<%=pageingUrl %>?currentPage=<%=currentPage+1%>&rowPerPage=<%=rowPerPage %>&category=<%=category%>">NEXT</a></li>
+				 	<li class="page-item"><a class="page-link" href="<%=pageingUrl %>?currentPage=<%=lastPage%>&rowPerPage=<%=rowPerPage %>&category=<%=category%>">LAST</a></li>
+			<% 
+				}else{
+			%>
+			   		<li class="page-item"><a class="page-link" href="#">NEXT</a></li>						
+				 	<li class="page-item"><a class="page-link" href="#">LAST</a></li>
+			<% 
+				}
+			%>
+		</ul>
+	</nav>
 </body>
 </html>
