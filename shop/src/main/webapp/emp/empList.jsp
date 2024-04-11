@@ -30,7 +30,7 @@
 	String listCntQry = "select COUNT(*) cnt from emp";
 	String[] qryNameArr = {"cnt"};
 	ArrayList<HashMap<String, Object>> cntOne = new ArrayList<HashMap<String, Object>>();
-	cntOne = model.listQry(conn, rsCnt, stmtCnt, listCntQry, qryNameArr);
+	cntOne = model.listQry(listCntQry, qryNameArr, new HashMap<Integer, Object>(){{}});
 	int totalRow = 0;
 	if(cntOne.get(0) != null){
 		totalRow = Integer.parseInt(""+cntOne.get(0).get("cnt"));		
@@ -132,7 +132,22 @@
 			</div>
 			<div class="col position-relative">
   				<div class="position-absolute top-0 start-0">
-					<%@ include file="/common/rowPerPage.jsp"  %>									  				
+					
+					<div class="dropdown">
+						<a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<% if(rowPerPage == 10) { %> 10개씩 보기 <% } %>
+							<% if(rowPerPage == 30) { %> 30개씩 보기 <% } %>
+							<% if(rowPerPage == 50) { %> 50개씩 보기 <% } %>
+							<% if(rowPerPage == 100) { %> 100개씩 보기 <% } %>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a class="dropdown-item" href="<%=pageingUrl %>?currentPage=<%=currentPage %>&rowPerPage=10">10개씩 보기</a></li>
+							<li><a class="dropdown-item" href="<%=pageingUrl %>?currentPage=<%=currentPage %>&rowPerPage=30">30개씩 보기</a></li>
+							<li><a class="dropdown-item" href="<%=pageingUrl %>?currentPage=<%=currentPage %>&rowPerPage=50">50개씩 보기</a></li>
+							<li><a class="dropdown-item" href="<%=pageingUrl %>?currentPage=<%=currentPage %>&rowPerPage=100">100개씩 보기</a></li>
+						</ul>
+					</div>
+								  				
   				</div>
 			</div>
 			</div>

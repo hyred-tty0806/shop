@@ -6,7 +6,6 @@
 	// 인증분기 : 세션변수 이름 - loginEmp
 	Common common = new Common();
 	int resultInt = common.loginCheck("in", request, response);
-	
  	String errMsg = request.getParameter("msg");
 %>
 <!DOCTYPE html>
@@ -47,6 +46,7 @@
 							</div>
 						</div>
 						<button type="submit" class="btn btn-success">로그인</button>
+						<a href="./joinForm.jsp" class="btn btn-success">사원등록</a>
 					</form>
 				</div>
 				<div>
@@ -63,6 +63,5 @@
 			<div class="col"></div>
 		</div>
 	</div>
-
 </body>
 </html>

@@ -25,7 +25,7 @@
 	PreparedStatement stmt = null;
 	String[] colNameArr = {"category"};
 	Model model = new Model();
-	ArrayList<HashMap<String, Object>> list = model.listQry(conn, rs, stmt, listQry, colNameArr);
+	ArrayList<HashMap<String, Object>> list = model.listQry(listQry, colNameArr, new HashMap<Integer, Object>(){{}});
 	
 %>
 <!DOCTYPE html>
