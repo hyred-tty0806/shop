@@ -47,6 +47,7 @@
 						</div>
 						<button type="submit" class="btn btn-success">로그인</button>
 						<a href="./joinForm.jsp" class="btn btn-success">사원등록</a>
+						<a href="/shop/shop/main.jsp" class="btn btn-success">shop SINSA</a>
 					</form>
 				</div>
 				<div>

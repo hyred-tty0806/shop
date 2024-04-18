@@ -11,20 +11,11 @@ import java.util.Map.Entry;
 public class Model {
 	Common common = new Common();
 	Connection conn = null;
-	ResultSet rs = null; 
 	PreparedStatement stmt = null;
+	ResultSet rs = null; 
 	
 	public ArrayList<HashMap<String, Object>> listQry(String qry, String[] qryNameArr, HashMap<Integer, Object> qryParamMap) throws SQLException, Exception{
-//	qry : 
-//		SELECT * FROM goods 
-//		WHERE 
-//		category = '나이키'
-//		AND (goods_content LIKE '%키워드%' OR goods_title LIKE '%키워드%')
-//		AND goods_no = 600
-//		ORDER BY goods_no DESC
-//		LIMIT 0, 10
 		conn = common.DBConnection();
-		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
 		stmt = conn.prepareStatement(qry);
 		int index = 1;
 		for(Entry<Integer, Object> e : qryParamMap.entrySet()){
@@ -35,6 +26,7 @@ public class Model {
 			}
 			index = index + 1;
 		}
+		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
 		rs = stmt.executeQuery(); 
 		while(rs.next()) {
 			HashMap<String, Object> m = new HashMap<String, Object>();
@@ -43,8 +35,10 @@ public class Model {
 			}
 			list.add(m);
 		}
+		System.out.println("list : " + list);
 		return list;
 	}
+	
 	public HashMap<String, Object> listOneQry(String qry, String[] qryNameArr, HashMap<Integer, Object> qryParamMap) throws Exception{
 		conn = common.DBConnection();
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
@@ -66,6 +60,9 @@ public class Model {
 			}
 			list.add(m);
 		}
+		rs.close();
+		stmt.close();
+		conn.close();
 		return list.get(0);
 	}
 	public int addQry(String qry, HashMap<Integer, Object> addMap) throws SQLException, Exception{
@@ -80,8 +77,12 @@ public class Model {
 			}
 			index = index + 1;
 		}
-		return stmt.executeUpdate();
+		int result =  stmt.executeUpdate();
+		stmt.close();
+		conn.close();
+		return result;
 	}
+	
 	public int updateQry(String qry, HashMap<Integer, Object> qryParamMap) throws Exception{
 		conn = common.DBConnection();
 		stmt = conn.prepareStatement(qry);

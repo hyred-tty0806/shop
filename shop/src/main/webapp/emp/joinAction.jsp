@@ -1,3 +1,4 @@
+<%@page import="shop.dao.EmpDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@page import="java.util.HashMap"%>
@@ -23,22 +24,16 @@
 	Common common = new Common();
 	int resultInt = common.loginCheck("in", request, response);
 %>
-
 <% 
-	Model model = new Model();
-	/*
-	INSERT INTO emp(emp_id, emp_pw, emp_name, emp_job, hire_date
-	) VALUES ('a',PASSWORD('a'), 'aabbcc', '사원', '2024-04-10')
-	*/
-	String sql = "INSERT INTO emp(emp_id, emp_pw, emp_name, emp_job, hire_date"
-			+") VALUES (?,PASSWORD(?), ?, ?, ?)";
-	int row = model.addQry(sql, new HashMap<Integer, Object>(){{
-				put(1, empId);
-				put(2, empPw);
-				put(3, empName);
-				put(4, empJob);
-				put(5, hireDate);
-			}});
+	HashMap<Integer, Object> qryParamMap = new HashMap<Integer, Object>()
+	{{
+		put(1, empId);
+		put(2, empPw);
+		put(3, empName);
+		put(4, empJob);
+		put(5, hireDate);
+	}};
+	int row = EmpDAO.insertEmp(qryParamMap);
 	if(row == 1) {
 		// 상품 등록 성공
 		System.out.println("사원 등록 성공");

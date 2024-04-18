@@ -1,3 +1,4 @@
+<%@page import="shop.dao.EmpDAO"%>
 <%@page import="shop.Model"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.ArrayList"%>
@@ -7,16 +8,11 @@
 <% 
 	Common common = new Common();
 	int resultInt = common.loginCheck("in", request, response);
-%>
-    
+%> 
 <% 
-	Model model = new Model();
-	/*SELECT emp_job FROM emp GROUP BY emp_job ORDER BY emp_job DESC;*/
-	String sql = "SELECT emp_job empJob FROM emp GROUP BY emp_job ORDER BY emp_job DESC";
 	ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
-	list = model.listQry(sql, new String[]{"empJob"}, new HashMap<Integer, Object>(){{}});
+	list = EmpDAO.selectEmpJobList(request, new HashMap<Integer, Object>());
 %>
-
 <%
 	String actionUrl = "./joinAction.jsp";
 	String currentUrl = "./joinForm.jsp";

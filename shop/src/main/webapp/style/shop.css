@@ -1,0 +1,49 @@
+/* /* styles.css */ */
+
+/* body, html { */
+/*     height: 100%; */
+/*     margin: 0; */
+/*     padding: 0; */
+/* } */
+
+/* footer { */
+/*     flex-shrink: 0;  footer 영역이 축소되지 않도록 설정 */
+/*     height: 50px;  footer의 높이를 50px로 설정 */
+/*     background-color: #f2f2f2; */
+/*     text-align: center; */
+/*     line-height: 50px; */
+/* } */
+
+/* .container { */
+/*     display: flex; */
+/*     height: calc(100% - 100px); 상단 영역 높이를 고려하여 가변적으로 설정 */
+/* } */
+
+/* aside, main { */
+/*     flex: 1; */
+/*     padding: 20px; */
+/* } */
+
+/* aside { */
+/*     background-color: #e6e6e6; */
+/* } */
+
+/* main { */
+/*     background-color: #f9f9f9; */
+/*     flex: 3; */
+/* } */
+
+/* header { */
+/*     display: flex; */
+/*     flex-direction: column;  세로 방향으로 아이템을 배치하기 위해 추가 */
+/*     height: 100px;  높이를 100px로 설정 */
+/*     background-color: #f2f2f2; */
+/* } */
+
+/* header div { */
+/*     flex: 1;  두 줄의 영역이 동일한 공간을 차지하도록 설정 */
+/*     display: flex; */
+/*     justify-content: center; */
+/*     align-items: center; */
+/*     border: 1px solid #ccc; 구분선을 위해 임의로 추가 */
+/* } */

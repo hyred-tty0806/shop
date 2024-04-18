@@ -84,6 +84,7 @@
 	}
 	orderByPart = " ORDER BY "+orderByCol+" "+orderBySet;
 	
+	
 	String sql = "SELECT goods_no no, category, emp_id empId, goods_title title, goods_content content, goods_price price, goods_amount amount, filename"
 				+" FROM goods WHERE 1 = 1 "
 				+ categoryPart
@@ -97,18 +98,7 @@
 	ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
 	list = model.listQry(sql, new String[]{"no","category","empId","title","content","price","amount","filename"}, qryParamMap);
 	int listSize = list.size();
-	for(int i = 0; i < listSize; i++){
-		HashMap<String, Object> m = new HashMap<String, Object>();
-		m.put("no", list.get(i).get("no"));
-		m.put("category", list.get(i).get("category"));
-		m.put("empId", list.get(i).get("empId"));
-		m.put("title", list.get(i).get("title"));
-		m.put("price", list.get(i).get("price"));
-		m.put("amount", list.get(i).get("amount"));
-		m.put("filename", list.get(i).get("filename"));
-		list.add(m);		
-	}
-	
+	System.out.println("listSize : " + listSize);
 	String pageingUrl = "./goodsList.jsp";
 	/* category null 이면 빼고 전체조회쿼리 아니면 where 조회쿼리 */
 	// JDBC API 사용이 끝났다면 DB자원들을 반납
@@ -189,6 +179,7 @@
 						<th>Amount</th>
 					</tr>	
 					<%
+						System.out.println("list.size() : " + list.size());
 						for(HashMap<String, Object> m : list) {
 					%>
 							<tr>

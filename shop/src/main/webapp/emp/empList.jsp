@@ -1,3 +1,4 @@
+<%@page import="shop.dao.EmpDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="shop.Model"%>
 <%@page import="shop.Common"%>
@@ -20,20 +21,11 @@
 		// 페이지 이동하여 currentPage 값을 받았을 때
 		currentPage = Integer.parseInt(request.getParameter("currentPage"));	
 	}
-	
-	Connection conn = common.DBConnection();
-	PreparedStatement stmtCnt = null;
-	ResultSet rsCnt = null;
-	
-	Model model = new Model();
+
 	/* row의 총 개수 */
-	String listCntQry = "select COUNT(*) cnt from emp";
-	String[] qryNameArr = {"cnt"};
-	ArrayList<HashMap<String, Object>> cntOne = new ArrayList<HashMap<String, Object>>();
-	cntOne = model.listQry(listCntQry, qryNameArr, new HashMap<Integer, Object>(){{}});
 	int totalRow = 0;
-	if(cntOne.get(0) != null){
-		totalRow = Integer.parseInt(""+cntOne.get(0).get("cnt"));		
+	if(EmpDAO.selectEmpListCntOne() != 0){
+		totalRow = EmpDAO.selectEmpListCntOne();		
 	}
 	/* row의 총 개수 */
 	
@@ -51,29 +43,12 @@
 	}
 	/* 마지막 페이지를 구하고 */	
 	
+	int startPage = (currentPage-1)*rowPerPage;
+	HashMap<Integer, Object> qryParamMap = new HashMap<Integer, Object>();
+	qryParamMap.put(1,startPage);
+	qryParamMap.put(2,rowPerPage);
 	
-	PreparedStatement stmt = null;
-	ResultSet rs = null;
-	String sql = "select emp_id empId, emp_name empName, emp_job empJob, hire_date hireDate, active from emp order by hire_date desc limit ?, ?";
-	stmt = conn.prepareStatement(sql);
-	stmt.setInt(1, (currentPage-1)*rowPerPage);
-	stmt.setInt(2, rowPerPage);
-	rs = stmt.executeQuery(); 
-	// JDBC API 종속된 자료구조 모델 ResultSet  -> 기본 API 자료구조(ArrayList)로 변경
-	
-	ArrayList<HashMap<String, Object>> list
-		= new ArrayList<HashMap<String, Object>>();
-	
-	// ResultSet -> ArrayList<HashMap<String, Object>>
-	while(rs.next()) {
-		HashMap<String, Object> m = new HashMap<String, Object>();
-		m.put("empId", rs.getString("empId"));
-		m.put("empName", rs.getString("empName"));
-		m.put("empJob", rs.getString("empJob"));
-		m.put("hireDate", rs.getString("hireDate"));
-		m.put("active", rs.getString("active"));
-		list.add(m);
-	}
+	ArrayList<HashMap<String, Object>> list = EmpDAO.selectEmpList(request, qryParamMap);
 	
 	// JDBC API 사용이 끝났다면 DB자원들을 반납
 	String pageingUrl = "./empList.jsp";

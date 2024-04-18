@@ -3,9 +3,70 @@
 body {
 	padding-top: 57px;
 }
-.me-style-col{
-	
+/* styles.css */
+
+/* 전반적인 스타일 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding-top: 57px;
 }
-.me-style-col-input {
-	
+
+/* 헤더 */
+header {
+    background-color: #f2f2f2;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li {
+    margin-bottom: 10px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #ff6600;
+}
+
+.modal-button {
+    margin-right: 20px;
+}
+
+.modal-button button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #ff6600;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .modal-button {
+        margin-top: 20px;
+        margin-right: 0;
+    }
 }
