@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.Map.Entry;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,6 +45,26 @@ public class Common {
 			}
 		}
 		return 1;	
+	}
+	public int customerLoginCheck(String sessionKey, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		HttpSession session = request.getSession();
+			if(session.getAttribute(sessionKey) == null){
+				return 0;
+			}else {
+				return 1;
+			}
+	}
+	
+	public int reqeustParsing(HashMap<String, Object> reqMap) {
+		int result = 0;
+		for(Entry<String, Object> e : reqMap.entrySet()){
+			if(e.getValue() == null ) {
+				break;
+			}else {
+				result = 1;
+			}
+		}
+		return result;
 	}
 	
 	public String getSessionInfo(String msgInfo, HttpServletRequest request, HttpServletResponse response) throws IOException {

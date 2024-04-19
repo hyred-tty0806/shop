@@ -63,6 +63,11 @@ public class Model {
 		rs.close();
 		stmt.close();
 		conn.close();
+		try {
+		    Object item = list.get(0);
+		} catch (IndexOutOfBoundsException e) {
+			return null;
+		}
 		return list.get(0);
 	}
 	public int addQry(String qry, HashMap<Integer, Object> addMap) throws SQLException, Exception{
