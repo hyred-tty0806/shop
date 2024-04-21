@@ -1,5 +1,22 @@
+<%@page import="shop.dao.EmpDAO"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="shop.Model"%>
+<%@page import="shop.Common"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+
+<%
+	Common common = new Common();
+	if (common.customerLoginCheck("cusLogin", request, response) == 0) {}
+	
+	HashMap<Integer, Object> qryParamMap = new HashMap<Integer, Object>();
+	ArrayList<HashMap<String, Object>> categoryList 
+		= EmpDAO.selectGooodsListGroupByCategory(request, qryParamMap);
+	ArrayList<HashMap<String, Object>> list 
+		= EmpDAO.selectGoodsList(request, qryParamMap);
+	System.out.println("list : " + list);
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -13,32 +30,15 @@
 	crossorigin="anonymous">
 <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css"
 	rel="stylesheet">
-<style type="text/css">
-.pagination-item {
-	width: 38px;
-	text-align: center;
-}
-
-.hhj-footer {
-	height: 10vh;
-}
-
-.hhj-header {
-	height: 10vh;
-}
-
-.merriweather-bold {
-	font-family: "Merriweather", serif;
-	font-weight: 700;
-	font-style: normal;
-}
-</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jacquard+24&family=Jacquarda+Bastarda+9+Charted&family=Jersey+20+Charted&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Platypi:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<link
+	href="https://fonts.googleapis.com/css2?family=Jacquard+24&family=Jacquarda+Bastarda+9+Charted&family=Jersey+20+Charted&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Platypi:ital,wght@0,300..800;1,300..800&display=swap"
+	rel="stylesheet">
 <link
 	href="https://fonts.googleapis.com/css2?family=Jersey+10&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
 	rel="stylesheet">
+<link href="/shop/style/shop.css" rel="stylesheet" type="text/css" />
 </head>
 <body class="merriweather-bold">
 	<div class="container-fluid ">
@@ -46,20 +46,7 @@
 		<div class="row">
 			<div class="col-12 ">
 				<!-- 최상단 -->
-				<div class="row">
-					<div
-						class="col-10  mx-1 my-1 hhj-header d-flex align-items-center fs-1">SIN-SA</div>
-					<div class="col  mx-1 my-1">
-						<div class="row">
-							<div class="col  mx-1 my-1">
-								<a href="/shop/shop/shopLoginForm.jsp"> LOGIN </a>
-							</div>
-							<div class="col  mx-1 my-1">
-								<a href="#"> JOIN </a>
-							</div>
-						</div>
-					</div>
-				</div>
+				<%@ include file="/common/shopMenu.jsp"%>
 				<!-- 최상단 -->
 
 				<!-- 콘텐츠 -->
@@ -68,11 +55,14 @@
 					<div class="col-2  mx-1 my-1">
 						CATEGORY
 						<ul>
-							<li>ADIDAS</li>
-							<li>FILA</li>
-							<li>ASICS</li>
-							<li>NIKE</li>
-							<li>NEW BALANCE</li>
+							<%
+								for (HashMap<String, Object> m : categoryList) {
+							%>
+									<li><%=m.get("category")%>(<%=m.get("cnt")%>)</li>
+							<%
+								}
+							%>
+						
 						</ul>
 					</div>
 					<!-- 좌측 사이드 -->
@@ -162,9 +152,9 @@
 						<div class="row">
 							<div class="col  mx-1 my-1">
 								<div class="row">
-									<div class="col bg-info mx-1 my-1">top-left</div>
-									<div class="col bg-info mx-1 my-1">top-center</div>
-									<div class="col bg-info mx-1 my-1">top-right</div>
+									<div class="col bg-info mx-1 my-1"></div>
+									<div class="col bg-info mx-1 my-1"></div>
+									<div class="col bg-info mx-1 my-1"></div>
 								</div>
 							</div>
 						</div>
@@ -173,258 +163,35 @@
 								<div class="row">
 									<div class="col  mx-1 my-1">
 										<div class="row">
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
 
+											
+
+											
+							<%
+								for (HashMap<String, Object> m : list) {
+							%>			
+									<div class="col  mx-1 my-1">
+										<div class="card" style="width: 18rem;">
+											<img src="/shop/upload/<%=m.get("filename")  %>" class="card-img-top" style="height: 50% !important;"
+												alt="...">
+											<div class="card-body">
+												<p class="card-text">
+												<%=m.get("category")  %>
+												<br>
+												<a href="/shop/shop/shopOneForm.jsp?no=<%=m.get("no") %>">
+												<%=m.get("title")  %>
+												</a>
+												<br>
+												<%=m.get("price")  %>
+												<br>
+												<%=m.get("amount")  %>
+												</p>
 											</div>
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
-
 										</div>
-										<div class="row">
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
-
-										</div>
-										<div class="row">
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
-
-										</div>
-										<div class="row">
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
-
-										</div>
-										<div class="row">
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
-											<div class="col  mx-1 my-1">
-												<div class="card" style="width: 18rem;">
-													<img src="/shop/upload/default.jpg" class="card-img-top"
-														alt="...">
-													<div class="card-body">
-														<p class="card-text">Some quick example text to build
-															on the card title and make up the bulk of the card's
-															content.</p>
-													</div>
-												</div>
-
-											</div>
+									</div>
+							<% 
+								}
+							%>
 
 										</div>
 									</div>
@@ -435,21 +202,21 @@
 							<div class="col  mx-1 my-1">
 								<div class="row">
 									<div class="d-flex justify-content-center">
-										<div class="bg-info mx-1 my-1 pagination-item">[<<]</div>
-										<div class="bg-info mx-1 my-1 pagination-item">[<]</div>
-										<div class="bg-info mx-1 my-1 pagination-item">1</div>
-										<div class="bg-info mx-1 my-1 pagination-item">2</div>
-										<div class="bg-info mx-1 my-1 pagination-item">3</div>
-										<div class="bg-info mx-1 my-1 pagination-item">4</div>
-										<div class="bg-info mx-1 my-1 pagination-item">5</div>
+										<div class=" mx-1 my-1 pagination-item">[<<]</div>
+										<div class=" mx-1 my-1 pagination-item">[<]</div>
+										<div class=" mx-1 my-1 pagination-item">1</div>
+										<div class=" mx-1 my-1 pagination-item">2</div>
+										<div class=" mx-1 my-1 pagination-item">3</div>
+										<div class=" mx-1 my-1 pagination-item">4</div>
+										<div class=" mx-1 my-1 pagination-item">5</div>
 
-										<div class="bg-info mx-1 my-1 pagination-item">6</div>
-										<div class="bg-info mx-1 my-1 pagination-item">7</div>
-										<div class="bg-info mx-1 my-1 pagination-item">8</div>
-										<div class="bg-info mx-1 my-1 pagination-item">9</div>
-										<div class="bg-info mx-1 my-1 pagination-item">10</div>
-										<div class="bg-info mx-1 my-1 pagination-item">[>]</div>
-										<div class="bg-info mx-1 my-1 pagination-item">[>>]</div>
+										<div class=" mx-1 my-1 pagination-item">6</div>
+										<div class=" mx-1 my-1 pagination-item">7</div>
+										<div class=" mx-1 my-1 pagination-item">8</div>
+										<div class=" mx-1 my-1 pagination-item">9</div>
+										<div class=" mx-1 my-1 pagination-item">10</div>
+										<div class=" mx-1 my-1 pagination-item">[>]</div>
+										<div class=" mx-1 my-1 pagination-item">[>>]</div>
 									</div>
 								</div>
 							</div>
@@ -457,9 +224,9 @@
 						<div class="row">
 							<div class="col  mx-1 my-1">
 								<div class="row">
-									<div class="col bg-info mx-1 my-1">bottom-left</div>
-									<div class="col bg-info mx-1 my-1">bottom-center</div>
-									<div class="col bg-info mx-1 my-1">bottom-right</div>
+									<div class="col bg-info mx-1 my-1"></div>
+									<div class="col bg-info mx-1 my-1"></div>
+									<div class="col bg-info mx-1 my-1"></div>
 								</div>
 							</div>
 						</div>
@@ -467,7 +234,7 @@
 					<!-- 메인콘텐츠 -->
 
 					<!--  우측 사이드 -->
-					<div class="col-1  mx-1 my-1">right-side</div>
+					<div class="col-1  mx-1 my-1"></div>
 					<!-- 우측 사이드 -->
 
 
@@ -478,8 +245,8 @@
 
 				<!-- 최하단 -->
 				<div class="row">
-					<div class="col  mx-1 my-1 hhj-footer"
-						style="height: 10vh;">bottom</div>
+					<div class="col  mx-1 my-1 hhj-footer" style="height: 10vh;">contact
+						: 02-0000-0000</div>
 				</div>
 			</div>
 		</div>

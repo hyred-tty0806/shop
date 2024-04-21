@@ -1,16 +1,13 @@
 package shop;
 
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +16,8 @@ import jakarta.servlet.http.HttpSession;
 public class Common {
 	public Connection DBConnection() throws Exception {
 		Class.forName("org.mariadb.jdbc.Driver");
-		FileReader fr = new FileReader("d:\\dev\\auth\\mariadb.properties");
+		/* FileReader fr = new FileReader("d:\\dev\\auth\\mariadb.properties"); */
+		FileReader fr = new FileReader("d:\\work\\dev\\auth\\mariadb.properties");
 		Properties prop = new Properties();
 		prop.load(fr);
 		System.out.println(prop.getProperty("id"));

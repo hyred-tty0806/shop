@@ -73,8 +73,10 @@ public class Model {
 	public int addQry(String qry, HashMap<Integer, Object> addMap) throws SQLException, Exception{
 		conn = common.DBConnection();
 		stmt = conn.prepareStatement(qry);
+		System.out.println("qry : " + qry);
 		int index = 1;
 		for(Entry<Integer, Object> e : addMap.entrySet()){
+			System.out.println("e.getValue() : " + e.getValue());
 			if(e.getValue() instanceof String) {
 				stmt.setString(index, (String) e.getValue());
 			}else {

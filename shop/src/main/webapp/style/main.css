@@ -70,3 +70,22 @@ nav ul li a:hover {
         margin-right: 0;
     }
 }
+
+.pagination-item {
+	width: 38px;
+	text-align: center;
+}
+
+.hhj-footer {
+	height: 10vh;
+}
+
+.hhj-header {
+	height: 10vh;
+}
+
+.merriweather-bold {
+	font-family: "Merriweather", serif;
+	font-weight: 700;
+	font-style: normal;
+}

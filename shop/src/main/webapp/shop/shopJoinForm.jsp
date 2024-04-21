@@ -52,7 +52,7 @@
 		<div class="row">
 			<div class="col-12 ">
 				<!-- 최상단 -->
-				<%@ include file="/common/shopMenu.jsp" %>
+				<%@ include file="/common/shopMenu.jsp"%>
 				<!-- 최상단 -->
 
 				<!-- 콘텐츠 -->
@@ -63,14 +63,15 @@
 
 							<div class="position-absolute top-50 start-50 translate-middle">
 								<div class="row">
-									<form action="/shop/shop/shopLoginAction.jsp" method="post">
+									<form action="/shop/shop/shopJoinAction.jsp" method="post">
 										<div class="col-12">
 											<div class="row mb-3">
 												<div class="col-4">
 													<label for="inputId">ID</label>
 												</div>
 												<div class="col-8">
-													<input type="text" name="id" class="form-control" id="inputId">
+													<input type="text" name="id" class="form-control"
+														id="inputId">
 												</div>
 											</div>
 											<div class="row mb-3">
@@ -78,13 +79,49 @@
 													<label for="inputPassword" class="col col-form-label">Password</label>
 												</div>
 												<div class="col-8">
-													<input type="password" name="pw" class="form-control" id="inputPassword">
+													<input type="password" name="pw" class="form-control"
+														id="inputPassword">
+												</div>
+											</div>
+											<div class="row mb-3">
+												<div class="col-4">
+													<label for="inputName">NAME</label>
+												</div>
+												<div class="col-8">
+													<input type="text" name="name" class="form-control"
+														id="inputId">
+												</div>
+											</div>
+											<div class="row mb-3">
+												<div class="col-4">
+													<label for="inputBirth" class="col col-form-label">BIRTH</label>
+												</div>
+												<div class="col-8">
+													<input type="date" name="birth" class="form-control"
+														id="inputBirth">
+												</div>
+											</div>
+											<div class="row mb-3">
+												<div class="col-12 d-flex justify-content-evenly">
+													<div class="form-check">
+														<input class="form-check-input" type="radio"
+															name="gender" value="남" id="gman"> 
+														<label
+															class="form-check-label" for="gman">
+															MAN </label>
+													</div>
+													<div class="form-check">
+														<input class="form-check-input" type="radio"
+															name="gender" value="여" id="gw" checked>
+														<label class="form-check-label" for="gw">
+															WOMAN </label>
+													</div>
 												</div>
 											</div>
 											<div class="row mb-3">
 												<div class="d-flex justify-content-center">
-													<button type="submit" class="btn btn-light me-2">LOGIN</button>
-													<a href="#" class="btn btn-light">FORGOT PASSWORD</a>
+													<button type="submit" class="btn btn-light me-2">REGISTRATION</button>
+													<a href="#" class="btn btn-light">BACK</a>
 												</div>
 											</div>
 										</div>

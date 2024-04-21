@@ -70,7 +70,7 @@
 	addMap.put(6, Integer.parseInt(price));
 	addMap.put(7, Integer.parseInt(amount));
 
-	int row = model.addQry(conn, rs, stmt, addSql, addMap);
+	int row = model.addQry(addSql, addMap);
 	
 	if(row == 1){
 		InputStream inputStream = part.getInputStream(); // part객체안에 파일(바이너리)을 메모로리 불러 옴

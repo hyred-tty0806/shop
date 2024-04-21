@@ -1,3 +1,4 @@
+<%@page import="shop.dao.EmpDAO"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="shop.Model"%>
@@ -17,16 +18,10 @@
 	String empName = common.getSessionInfo("empName", request, response);
 %>
 
-<% 
-	/* 1. 카테고리 목록 조회 */
-	String listQry = "select category from goods GROUP BY category ORDER BY category ASC";
-	Connection conn = common.DBConnection();
-	ResultSet rs = null;
-	PreparedStatement stmt = null;
-	String[] colNameArr = {"category"};
-	Model model = new Model();
-	ArrayList<HashMap<String, Object>> list = model.listQry(listQry, colNameArr, new HashMap<Integer, Object>(){{}});
-	
+<%
+	HashMap<Integer, Object> qryParamMap = new HashMap<Integer, Object>();
+	ArrayList<HashMap<String, Object>> list 
+		= EmpDAO.selectCategoryList(request, qryParamMap);
 %>
 <!DOCTYPE html>
 <html>

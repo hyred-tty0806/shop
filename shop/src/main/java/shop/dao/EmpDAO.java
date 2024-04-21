@@ -78,6 +78,43 @@ public class EmpDAO {
 		return list;
 	}
 	
+	
+	public static ArrayList<HashMap<String, Object>> selectGoodsList(HttpServletRequest request, HashMap<Integer, Object> qryParamMap) throws Exception{
+		Model model = new Model();
+		String qry = "SELECT "
+				+ "goods_no no, category, emp_id empId, "
+				+ "goods_title title, goods_content content, "
+				+ "goods_price price, goods_amount amount, filename"
+				+" FROM goods WHERE 1 = 1 ";
+		ArrayList<HashMap<String, Object>> list = model.listQry(qry, 
+				new String[] {
+						"no",
+						"category",
+						"empId",
+						"title",
+						"content",
+						"price",
+						"amount",
+						"filename"
+						}, qryParamMap);
+		return list;
+	}
+	
+	
+	public static ArrayList<HashMap<String, Object>> selectGooodsListGroupByCategory(HttpServletRequest request, HashMap<Integer, Object> qryParamMap) throws Exception{
+		Model model = new Model();
+		String qry = "SELECT category, count(*) cnt FROM goods "
+				+ "WHERE 1=1 "
+				+ " GROUP BY category ORDER BY category ASC";
+		ArrayList<HashMap<String, Object>> list = model.listQry(qry, new String[] {"category", "cnt"}, qryParamMap);
+		return list;
+	}
+	public static ArrayList<HashMap<String, Object>> selectCategoryList(HttpServletRequest request, HashMap<Integer, Object> qryParamMap) throws Exception{
+		Model model = new Model();
+		String qry = "select category from category GROUP BY category ORDER BY category ASC";
+		return model.listQry(qry, new String[]{"category"}, qryParamMap);
+	}
+	
 	public static ArrayList<HashMap<String, Object>> selectEmpJobList(HttpServletRequest request, HashMap<Integer, Object> qryParamMap) throws Exception{
 		Model model = new Model();
 		String qry = "SELECT emp_job empJob "

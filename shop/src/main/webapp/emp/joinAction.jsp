@@ -16,7 +16,7 @@
 	
 	// 요청 값이 1개라도 null일시
 	if(empId == null || empPw == null || empPwCheck == null || 
-			empName == null || empJob == null || hireDate == null) {
+			empName == null || hireDate == null) {
 		response.sendRedirect("/shop/emp/joinForm.jsp");
 		return;
 	}
