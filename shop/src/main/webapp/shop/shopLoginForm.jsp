@@ -60,8 +60,10 @@
 					<!-- 메인콘텐츠 -->
 					<div class="col mx-1 my-1">
 						<div class="position-relative hhj-main">
-
 							<div class="position-absolute top-50 start-50 translate-middle">
+							
+							
+							
 								<div class="row">
 									<form action="/shop/shop/shopLoginAction.jsp" method="post">
 										<div class="col-12">
@@ -90,11 +92,12 @@
 										</div>
 									</form>
 								</div>
+								
+								
+								
 							</div>
 						</div>
-
 					</div>
-
 				</div>
 				<!-- 메인콘텐츠 -->
 			</div>

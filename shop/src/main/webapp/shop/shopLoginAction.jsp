@@ -8,7 +8,7 @@
 	//인증분기 : 세션변수 이름 - loginEmp
 	Common common = new Common();
 	int resultInt = common.customerLoginCheck("shopLogin", request, response);
-	if(resultInt == 0){
+	if(resultInt == 1){
 		response.sendRedirect("/shop/shop/main.jsp");
 		return;
 	}

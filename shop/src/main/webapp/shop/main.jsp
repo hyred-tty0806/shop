@@ -1,21 +1,106 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@page import="shop.dao.EmpDAO"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="shop.Model"%>
 <%@page import="shop.Common"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
 
 <%
 	Common common = new Common();
 	if (common.customerLoginCheck("cusLogin", request, response) == 0) {}
 	
+	
+	
 	HashMap<Integer, Object> qryParamMap = new HashMap<Integer, Object>();
 	ArrayList<HashMap<String, Object>> categoryList 
-		= EmpDAO.selectGooodsListGroupByCategory(request, qryParamMap);
-	ArrayList<HashMap<String, Object>> list 
-		= EmpDAO.selectGoodsList(request, qryParamMap);
-	System.out.println("list : " + list);
+		= EmpDAO.selectGooodsListGroupByCategory(request, qryParamMap);	
+	
+
+	int currentPage = 1; // 1. 처음이면 1페이지 
+	if(request.getParameter("currentPage") != null){ // 요청된 파라미터가 있으면
+		// 페이지 이동하여 currentPage 값을 받았을 때
+		currentPage = Integer.parseInt(request.getParameter("currentPage"));	
+	}
+	
+	String category = "";
+	String categoryPart = "";
+	if(request.getParameter("category") != null 
+			&& !request.getParameter("category").equals("")
+			&& !request.getParameter("category").equals("null")){
+		category = request.getParameter("category");
+		System.out.println("category : " + request.getParameter("category"));
+		categoryPart = " AND category = '"+request.getParameter("category")+"'";
+	}
+	
+	String keyword = "";
+	String keywordPartQry = "";
+	if(request.getParameter("keyword") != null){
+		keyword = request.getParameter("keyword");
+		System.out.println("keyword : " + keyword);
+		keywordPartQry = " AND (goods_content like '%"+request.getParameter("keyword")+"%'"
+						+" OR goods_title like '%"+request.getParameter("keyword")+"%') ";
+	}
+	
+	String categoryQry = "";
+	categoryQry = "SELECT category, count(*) cnt FROM goods "
+			+ "WHERE 1=1 "
+			+ " GROUP BY category ORDER BY category ASC";
+	Model model = new Model();
+	String listCntQry = "SELECT COUNT(*) cnt FROM goods";
+	ArrayList<HashMap<String, Object>> listCnt = new ArrayList<HashMap<String, Object>>();
+	listCnt = model.listQry(categoryQry, new String[]{"cnt"}, new HashMap<Integer, Object>(){{}});
+	
+	int totalRow = 0;
+	if(listCnt.size() > 0){
+		totalRow = Integer.parseInt(""+listCnt.get(0).get("cnt"));
+	}
+	System.out.println("totalRow : " + totalRow);
+	
+	int rowPerPage = 20;
+ 	if(request.getParameter("rowPerPage") != null){
+ 		rowPerPage = Integer.parseInt(request.getParameter("rowPerPage"));		
+	} 
+	int lastPage = totalRow / rowPerPage;
+	if(totalRow%rowPerPage != 0){
+		lastPage = lastPage + 1;
+	}
+	
+	int startPage = (currentPage-1)*rowPerPage;
+	
+	String orderByCol = "goods_no";
+	String orderBySet = "DESC";
+	String orderByPart = "";
+	if(request.getParameter("orderByCol") != null){
+		orderByCol = request.getParameter("orderByCol");
+	}
+	if(request.getParameter("orderBySet") != null){
+		orderBySet = request.getParameter("orderBySet");		
+	}
+	orderByPart = " ORDER BY "+orderByCol+" "+orderBySet;
+	
+	
+	String sql = "SELECT goods_no no, category, emp_id empId, goods_title title, goods_content content, goods_price price, goods_amount amount, filename"
+				+" FROM goods WHERE 1 = 1 "
+				+ categoryPart
+				+ keywordPartQry
+				+ orderByPart +" LIMIT ?, ?";
+	qryParamMap.put(1,startPage);
+	qryParamMap.put(2,rowPerPage);
+	
+	System.out.println("sql : "+sql);
+	ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+	list = model.listQry(sql, new String[]{"no","category","empId","title","content","price","amount","filename"}, qryParamMap);
+	int listSize = list.size();
+	System.out.println("listSize : " + listSize);
+	String currentUrl = "/shop/shop/main.jsp";
+	int pagesPerGroup = 10;
+	int totalPage = (int)Math.ceil((double)totalRow/rowPerPage);
+	int currentGroup = (int)Math.ceil((double)currentPage/pagesPerGroup);
+	int sPage = (currentGroup - 1) * pagesPerGroup + 1;
+	int ePage = Math.min(currentGroup * pagesPerGroup, totalPage);
+	
+	
 %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -202,21 +287,83 @@
 							<div class="col  mx-1 my-1">
 								<div class="row">
 									<div class="d-flex justify-content-center">
-										<div class=" mx-1 my-1 pagination-item">[<<]</div>
-										<div class=" mx-1 my-1 pagination-item">[<]</div>
-										<div class=" mx-1 my-1 pagination-item">1</div>
-										<div class=" mx-1 my-1 pagination-item">2</div>
-										<div class=" mx-1 my-1 pagination-item">3</div>
-										<div class=" mx-1 my-1 pagination-item">4</div>
-										<div class=" mx-1 my-1 pagination-item">5</div>
+										<% 
+											if(currentPage > 1){
+										%>
+										<div class=" mx-1 my-1 pagination-item">
+											<a class="text-decoration-none" href="<%=currentUrl%>?currentPage=1&rowPerPage=<%=rowPerPage %>&category=<%=category%>">
+												[<<]
+											</a> 
+										</div>
+										<div class=" mx-1 my-1 pagination-item">
+											<a class="text-decoration-none" href="<%=currentUrl%>?currentPage=<%=currentPage-1%>&rowPerPage=<%=rowPerPage %>&category=<%=category%>">
+												[<]
+											</a>
+										</div>
+										<%
+											}else{
+										%>
+										<div class=" mx-1 my-1 pagination-item">
+											<a href="#" class="text-decoration-none">
+												[<<]
+											</a>
+										</div>
+										<div class=" mx-1 my-1 pagination-item">
+											<a href="#" class="text-decoration-none">
+												[<]
+											</a>
+										</div>										
+										<% 
+											}
+										%>
 
-										<div class=" mx-1 my-1 pagination-item">6</div>
-										<div class=" mx-1 my-1 pagination-item">7</div>
-										<div class=" mx-1 my-1 pagination-item">8</div>
-										<div class=" mx-1 my-1 pagination-item">9</div>
-										<div class=" mx-1 my-1 pagination-item">10</div>
-										<div class=" mx-1 my-1 pagination-item">[>]</div>
-										<div class=" mx-1 my-1 pagination-item">[>>]</div>
+										<% 
+											for(; sPage <= ePage; sPage++){
+										%>
+												<div class="mx-1 my-1 pagination-item">
+												
+												<% if(currentPage == sPage){%>
+													<span class="text-primary"><%=currentPage%></span>
+												<%} else { %>
+													<a class="text-decoration-none text-light-emphasis" href="<%=currentUrl %>?currentPage=<%=sPage%>&rowPerPage=<%=rowPerPage %>&category=<%=category%>">
+														<%=sPage %>
+													</a>										
+												<%} %>
+												
+												</div>												
+										<%
+											}
+										%>
+										
+										<%
+											if(currentPage < lastPage){	
+										%>
+												<div class=" mx-1 my-1 pagination-item">
+													<a class="text-decoration-none" href="<%=currentUrl %>?currentPage=<%=currentPage+1%>&rowPerPage=<%=rowPerPage %>&category=<%=category%>">
+														[>]
+													</a>
+												</div>
+												<div class=" mx-1 my-1 pagination-item">
+													<a class="text-decoration-none" href="<%=currentUrl %>?currentPage=<%=lastPage%>&rowPerPage=<%=rowPerPage %>&category=<%=category%>">
+														[>>]
+													</a>
+												</div>
+										<% 
+											}else{
+										%>										
+												<div class=" mx-1 my-1 pagination-item">
+													<a class="text-decoration-none" href="#">
+														[>]
+													</a>
+												</div>
+												<div class=" mx-1 my-1 pagination-item">
+													<a class="text-decoration-none" href="#">
+														[>>]
+													</a>
+												</div>
+										<% 
+				}
+			%>
 									</div>
 								</div>
 							</div>
@@ -244,10 +391,7 @@
 
 
 				<!-- 최하단 -->
-				<div class="row">
-					<div class="col  mx-1 my-1 hhj-footer" style="height: 10vh;">contact
-						: 02-0000-0000</div>
-				</div>
+				<%@ include file="/common/shopBottom.jsp"%>
 			</div>
 		</div>
 	</div>

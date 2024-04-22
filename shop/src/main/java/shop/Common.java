@@ -16,8 +16,8 @@ import jakarta.servlet.http.HttpSession;
 public class Common {
 	public Connection DBConnection() throws Exception {
 		Class.forName("org.mariadb.jdbc.Driver");
-		/* FileReader fr = new FileReader("d:\\dev\\auth\\mariadb.properties"); */
-		FileReader fr = new FileReader("d:\\work\\dev\\auth\\mariadb.properties");
+		FileReader fr = new FileReader("d:\\dev\\auth\\mariadb.properties");
+		/* FileReader fr = new FileReader("d:\\work\\dev\\auth\\mariadb.properties"); */
 		Properties prop = new Properties();
 		prop.load(fr);
 		System.out.println(prop.getProperty("id"));
